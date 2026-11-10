@@ -261,6 +261,30 @@ app.post('/api/tasks/:id/ai-costs', auth, role('creative'), (req, res) => {
   res.json({ ok: true });
 });
 
+// lead assigns a free task to a creative
+app.post('/api/tasks/:id/assign', auth, role('lead'), (req, res) => {
+  const t = getTask(+req.params.id);
+  if (!t) return res.status(404).json({ error: 'Задача не найдена' });
+  if (t.status !== 'new') return res.status(409).json({ error: 'Назначить можно только задачу из «Новых»' });
+  const u = db.prepare("SELECT id, name FROM users WHERE id = ? AND role = 'creative'").get(+req.body?.creative_id);
+  if (!u) return res.status(400).json({ error: 'Выберите креативщика' });
+  const ts = now();
+  tx(() => {
+    db.prepare(`UPDATE tasks SET status='in_progress', creative_id=?, taken_at=? WHERE id=?`).run(u.id, ts, t.id);
+    log(t.id, req.user.id, 'assign', 'new', 'in_progress', 'Исполнитель: ' + u.name);
+  });
+  res.json(getTask(t.id));
+});
+
+app.get('/api/notifications', auth, (req, res) => {
+  const me = req.user;
+  const f = me.role === 'lead' ? '1=1' : me.role === 'buyer' ? 't.buyer_id = ?' : "(t.creative_id = ? OR h.action = 'created')";
+  const args = [me.id, ...(me.role === 'lead' ? [] : [me.id])];
+  res.json(db.prepare(`SELECT h.id, h.task_id, h.action, h.comment, h.created_at, h.user_id, u.name AS user_name, t.title
+    FROM history h JOIN users u ON u.id = h.user_id JOIN tasks t ON t.id = h.task_id
+    WHERE h.user_id != ? AND ${f} ORDER BY h.created_at DESC LIMIT 25`).all(...args));
+});
+
 app.post('/api/tasks/:id/comment', auth, (req, res) => {
   const t = getTask(+req.params.id);
   if (!t || !canSee(req.user, t)) return res.status(404).json({ error: 'Задача не найдена' });
@@ -328,7 +352,11 @@ app.get('/api/analytics', auth, role('lead'), (req, res) => {
 
   const overdueList = db.prepare(TASK_SELECT + ` WHERE ${inPeriod} AND ${overdueExpr} ORDER BY t.deadline`).all(...P);
 
-  res.json({ byStatus, totals, creatives, buyers, aiByService, aiMatrix, byType, overdueList });
+  const daily = {
+    created: db.prepare(`SELECT substr(t.created_at,1,10) d, COUNT(*) n FROM tasks t WHERE ${inPeriod} GROUP BY d`).all(...P),
+    done: db.prepare(`SELECT substr(t.completed_at,1,10) d, COUNT(*) n FROM tasks t WHERE t.completed_at IS NOT NULL AND ${inPeriod} GROUP BY d`).all(...P),
+  };
+  res.json({ byStatus, totals, creatives, buyers, aiByService, aiMatrix, byType, overdueList, daily });
 });
 
 app.get('/api/activity', auth, role('lead'), (req, res) =>

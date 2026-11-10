@@ -11,7 +11,7 @@ const ROLES = { buyer: 'Медиабайер', creative: 'Креативщик',
 const ACTIONS = {
   created: 'создал(а) задачу', take: 'взял(а) в работу', submit: 'сдал(а) на проверку', revise: 'отправил(а) на правки',
   accept: 'принял(а) работу', release: 'вернул(а) в «Новые»', reopen: 'переоткрыл(а) задачу', edited: 'изменил(а) ТЗ',
-  comment: 'оставил(а) комментарий', ai_cost: 'добавил(а) AI-расход',
+  comment: 'оставил(а) комментарий', assign: 'назначил(а) исполнителя', ai_cost: 'добавил(а) AI-расход',
 };
 const DEFAULT_AI = ['Midjourney', 'Runway', 'Kling', 'ElevenLabs', 'ChatGPT', 'Leonardo', 'HeyGen', 'Suno', 'Sora', 'Stable Diffusion'];
 
@@ -83,6 +83,7 @@ const stTag = (s) => `<span class="tag st" style="background:var(--c-${s})">${ST
 function allowedMoves(t) {
   const r = S.me.role, mine = t.creative_id === S.me.id, owner = t.buyer_id === S.me.id || r === 'lead';
   const m = {};
+  if (r === 'lead' && t.status === 'new') m.in_progress = 'assign';
   if (r === 'creative') {
     if (t.status === 'new') m.in_progress = 'take';
     if (mine && t.status === 'in_progress') { m.review = 'submit'; m.new = 'release'; }
@@ -97,6 +98,8 @@ function allowedMoves(t) {
 }
 async function doAction(t, action) {
   S.reopen = !!$('.drawer');
+  S.reopen = !!$('.drawer');
+  if (action === 'assign') return assignDialog(t);
   if (action === 'submit') return submitDialog(t);
   if (action === 'revise' || action === 'reopen')
     return promptDialog(action === 'revise' ? 'Отправить на правки' : 'Переоткрыть задачу', 'Что нужно поправить?', async (comment) => {
@@ -156,7 +159,7 @@ function render() {
     document.documentElement.dataset.theme = cur === 'dark' ? 'light' : 'dark';
     try { localStorage.theme = document.documentElement.dataset.theme; } catch {}
   });
-  ({ board: renderBoard, list: renderList, analytics: renderAnalytics }[route] || renderBoard)(true);
+  ({ board: renderBoard, list: renderList, analytics: renderAnalytics, team: renderTeam, settings: renderSettings }[route] || renderBoard)(true);
 }
 try { if (localStorage.theme) document.documentElement.dataset.theme = localStorage.theme; } catch {}
 
@@ -244,7 +247,7 @@ function bindFilters(rerender) {
   if ($('#new')) $('#new').onclick = () => taskForm();
 }
 function card(t) {
-  const draggable = Object.keys(allowedMoves(t)).length > 0;
+  const draggable = true;
   return `<div class="card p-${t.priority}" data-id="${t.id}" draggable="${draggable}" tabindex="0" role="button" aria-label="Задача #${t.id}: ${esc(t.title)}">
     <div class="card-top"><span class="tag p-${t.priority}">${PRIO[t.priority]}</span><span class="tag">${TYPES[t.creative_type]} × ${t.quantity}</span>
       <span class="tag">${esc(t.geo)}</span>${t.revisions ? `<span class="tag" title="Кругов правок">↻ ${t.revisions}</span>` : ''}
@@ -278,15 +281,18 @@ async function renderBoard(load) {
       e.dataTransfer.setData('text/plain', t.id); c.classList.add('dragging');
       $$('.col').forEach(col => col.classList.add(moves[col.dataset.status] ? 'drop-ok' : col.dataset.status === t.status ? 'x' : 'drop-no'));
     };
-    c.ondragend = () => { c.classList.remove('dragging'); $$('.col').forEach(col => col.classList.remove('drop-ok', 'drop-no', 'x')); };
+    c.ondragend = () => { c.classList.remove('dragging'); $$('.col').forEach(col => col.classList.remove('drop-ok', 'drop-no', 'x', 'over')); };
   });
   $$('.col').forEach(col => {
-    col.ondragover = (e) => { if (col.classList.contains('drop-ok')) e.preventDefault(); };
+    col.ondragover = (e) => { e.preventDefault(); col.classList.toggle('over', col.classList.contains('drop-ok')); };
+    col.ondragleave = (e) => { if (!col.contains(e.relatedTarget)) col.classList.remove('over'); };
     col.ondrop = run(async (e) => {
       e.preventDefault();
       const t = S.tasks.find(x => x.id === +e.dataTransfer.getData('text/plain'));
       const action = t && allowedMoves(t)[col.dataset.status];
+      col.classList.remove('over');
       if (action) await doAction(t, action);
+      else if (t && col.dataset.status !== t.status) toast(whyNot(t, col.dataset.status), true);
     });
   });
 }
@@ -427,7 +433,7 @@ async function openTask(id) {
   if (!t) return;
   const moves = allowedMoves(t);
   const btns = [];
-  const A = { take: ['primary', 'Взять в работу'], submit: ['primary', t.revisions ? 'Сдать правки' : 'Сдать результат'], accept: ['ok', 'Принять работу'],
+  const A = { assign: ['primary', 'Назначить'], take: ['primary', 'Взять в работу'], submit: ['primary', t.revisions ? 'Сдать правки' : 'Сдать результат'], accept: ['ok', 'Принять работу'],
     revise: ['warn', 'На правки'], reopen: ['', 'Переоткрыть'], release: ['ghost', 'Вернуть в «Новые»'] };
   Object.values(moves).forEach(a => btns.push(`<button class="btn ${A[a][0]}" data-act="${a}">${A[a][1]}</button>`));
   if (t.creative_id === S.me.id && ['in_progress', 'revision'].includes(t.status)) btns.push(`<button class="btn" id="add-cost">✦ AI-расход</button>`);
@@ -534,13 +540,14 @@ async function renderAnalytics() {
       <div class="kpi" style="--kc:#00b3c7"><div class="ki">${I.clock}</div><small>Среднее время в работе</small><b>${fmtDur(T.avg_work_h)}</b><span>ожидание исполнителя ${fmtDur(T.avg_wait_h)}</span></div>
       <div class="kpi ${T.overdue ? 'bad' : ''}" style="--kc:#ef4459"><div class="ki">${I.alert}</div><small>Просрочки</small><b>${T.overdue || 0}</b><span>${total ? Math.round((T.overdue || 0) / total * 100) : 0}% задач</span></div>
       <div class="kpi" style="--kc:#f08c1c"><div class="ki">${I.loop}</div><small>Кругов правок</small><b>${T.revisions || 0}</b><span>${total ? ((T.revisions || 0) / total).toFixed(2) : 0} на задачу</span></div>
-      <div class="kpi" style="--kc:#c04dff"><div class="ki">${I.spark}</div><small>AI-кредиты</small><b>${Math.round(T.ai_credits).toLocaleString('ru-RU')}</b><span>${a.byStatus.done ? Math.round(T.ai_credits / a.byStatus.done) : 0} на готовую задачу</span></div>
+      <div class="kpi" style="--kc:#c04dff"><div class="ki">${I.spark}</div><small>AI-кредиты</small><b>${Math.round(T.ai_credits).toLocaleString('ru-RU')}</b><span>${a.byStatus.done ? Math.round(T.ai_credits / a.byStatus.done) : 0} на готовую задачу · ≈ ${Math.round(T.ai_credits * price()).toLocaleString('ru-RU')}</span></div>
     </div>
     <div class="an-grid">
       <section class="panel wide"><h3>${ico("tasks")}Задачи по статусам</h3>
         <div class="stack">${Object.entries(a.byStatus).map(([s, n]) => n ? `<div style="flex:${n};background:var(--c-${s})" title="${STATUS[s]}: ${n}"></div>` : '').join('')}</div>
         <div class="legend">${Object.entries(a.byStatus).map(([s, n]) => `<span><i style="background:var(--c-${s})"></i>${STATUS[s]}: <b style="color:var(--text)">${n}</b></span>`).join('')}</div>
       </section>
+      ${dailyChart(a.daily)}
       <section class="panel wide table-wrap"><h3>${ico("users")}Загрузка креативщиков</h3>
         <table class="t"><thead><tr><th>Исполнитель</th><th>Текущая загрузка</th><th class="num">В работе</th><th class="num">На проверке</th><th class="num">Готово</th>
           <th class="num">Ср. время в работе</th><th class="num">Правок</th><th class="num">Просрочек</th><th class="num">AI-кредиты</th></tr></thead><tbody>
@@ -581,4 +588,4 @@ async function renderAnalytics() {
   clickable($('[data-id]', view));
 }
 
-boot();
+document.addEventListener('DOMContentLoaded', boot);
