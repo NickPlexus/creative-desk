@@ -8,6 +8,10 @@ Kanban · учёт времени по этапам · учёт AI-расход�
 
 `Node.js 22` · `Express` · `SQLite` · `Vanilla JS SPA` · `Docker` · `Render`
 
+### 🚀 [Открыть демо → creative-desk-3m61.onrender.com](https://creative-desk-3m61.onrender.com)
+
+Пароль у всех демо-пользователей: `demo123` · первое открытие после простоя занимает до минуты
+
 </div>
 
 <p align="center"><img src="docs/login.jpg" width="49%"> <img src="docs/board.jpg" width="49%"><br><img src="docs/analytics.jpg" width="49%"> <img src="docs/task.jpg" width="49%"></p>
