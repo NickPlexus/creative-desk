@@ -1,0 +1,21 @@
+{
+  "name": "creative-desk",
+  "version": "1.0.0",
+  "description": "Мини-сервис управления креативным отделом",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "reset": "node -e \"require('fs').rmSync('data.db',{force:true})\" && node seed.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^4.22.3",
+    "multer": "^1.4.4"
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}
