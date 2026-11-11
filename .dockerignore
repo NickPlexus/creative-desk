@@ -1,4 +1,5 @@
 node_modules
+pgdata
 data.db*
 uploads
 .git

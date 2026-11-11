@@ -5,15 +5,16 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "seed": "node seed.js",
-    "reset": "node -e \"require('fs').rmSync('data.db',{force:true})\" && node seed.js"
+    "reset": "node -e \"require('fs').rmSync('pgdata',{recursive:true,force:true})\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.17",
     "cookie-parser": "^1.4.7",
     "express": "^4.22.3",
-    "multer": "^1.4.4"
+    "multer": "^1.4.4",
+    "pg": "^8.23.1"
   },
   "engines": {
     "node": ">=22.5"

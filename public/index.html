@@ -3,17 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>Creative Desk</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236d5efc'/><path d='M9 10h5v12H9zM18 10h5v7h-5z' fill='white'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%236c4dff'/><path d='M9 10h5v12H9zM18 10h5v7h-5z' fill='white'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app"><div class="boot">Загрузка…</div></div>
   <div id="modal-root"></div>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="/app.js"></script>
-  <script src="/extras.js"></script>
+  <script defer src="/js/core.js"></script>
+  <script defer src="/js/tasks.js"></script>
+  <script defer src="/js/taskcard.js"></script>
+  <script defer src="/js/pages.js"></script>
+  <script defer src="/js/analytics.js"></script>
+  <script defer src="/js/admin.js"></script>
 </body>
 </html>
