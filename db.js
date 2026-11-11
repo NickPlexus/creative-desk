@@ -1,5 +1,6 @@
 // Database layer: PostgreSQL in production (DATABASE_URL), embedded PGlite (same SQL dialect) locally.
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 
 const SCHEMA = `
@@ -102,6 +103,7 @@ async function init() {
   } else {
     const { PGlite } = require('@electric-sql/pglite');
     const dir = path.join(process.env.DATA_DIR || __dirname, 'pgdata');
+    fs.mkdirSync(dir, { recursive: true });
     lite = new PGlite(dir);
     await lite.waitReady;
     await lite.exec(SCHEMA);
