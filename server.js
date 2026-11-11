@@ -370,6 +370,7 @@ app.use((err, req, res, next) => {
   if (!err.status) console.error(err);
   res.status(err.status || 500).json({ error: err.status ? err.message : 'Ошибка сервера' });
 });
+app.get('/concept', (req, res) => res.sendFile(path.join(__dirname, 'public', 'concept.html')));
 app.get(/^\/(?!api|uploads).*/, (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 const PORT = process.env.PORT || 3000;

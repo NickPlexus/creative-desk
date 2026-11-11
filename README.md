@@ -10,6 +10,8 @@ Kanban · учёт времени по этапам · учёт AI-расход�
 
 ### 🚀 [Открыть демо → creative-desk-3m61.onrender.com](https://creative-desk-3m61.onrender.com)
 
+📐 [Концепция Creative Desk 2.0](https://creative-desk-3m61.onrender.com/concept): структура, UX, новые функции и план разработки
+
 Пароль у всех демо-пользователей: `demo123` · первое открытие после простоя занимает до минуты
 
 </div>

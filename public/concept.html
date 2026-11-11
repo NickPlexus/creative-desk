@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creative Desk 2.0 — концепция</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236d5efc'/><path d='M9 10h5v12H9zM18 10h5v7h-5z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090b14;--surface:#141726;--surface-2:#1b1f31;--surface-3:#23283d;--border:rgba(255,255,255,.08);--border-2:rgba(255,255,255,.14);
+--text:#eef0fb;--muted:#9a9fbd;--faint:#6b7092;--accent:#8f78ff;--accent-2:#00c2ff;--soft:rgba(143,120,255,.14);
+--ok:#16b47e;--warn:#f08c1c;--danger:#ef4459;--info:#1d8cf0;--grad:linear-gradient(135deg,#7b5cff,#5a7bff 50%,#00c2ff);
+--display:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f5fa;--surface:#fff;--surface-2:#f6f7fc;--surface-3:#eceef7;--border:rgba(20,24,54,.08);--border-2:rgba(20,24,54,.15);
+--text:#11142a;--muted:#5d627e;--faint:#6b7190;--accent:#6c4dff;--soft:rgba(108,77,255,.1);--warn:#b86200;--ok:#0e7a56}}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 600px at 0 -10%,rgba(124,92,255,.18),transparent 60%),radial-gradient(800px 500px at 100% 0,rgba(0,194,255,.08),transparent 60%)}
+a{color:var(--accent)}h1,h2,h3,h4{font-family:var(--display);letter-spacing:-.02em;margin:0}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px;max-width:1240px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:0;height:100vh;overflow:auto;padding:32px 0;font-size:13.5px}
+.toc .brand{display:flex;gap:10px;align-items:center;font:700 16px var(--display);margin-bottom:22px}
+.toc .brand i{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#fff;font-style:normal;font-size:13px}
+.toc a{display:block;padding:6px 12px;border-radius:9px;color:var(--muted);text-decoration:none;border-left:2px solid transparent}
+.toc a:hover{color:var(--text);background:var(--surface-2)}.toc a.on{color:var(--accent);background:var(--soft);border-left-color:var(--accent)}
+.toc .links{margin-top:22px;display:grid;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:11px;font-weight:600;font-size:13.5px;text-decoration:none;border:1px solid var(--border-2);color:var(--text);background:var(--surface)}
+.btn.p{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(108,77,255,.35)}
+main{padding:40px 0 80px;min-width:0}
+.hero{padding:34px;border-radius:24px;background:radial-gradient(600px 400px at 85% 0,rgba(0,194,255,.35),transparent 60%),linear-gradient(140deg,#2a1a7a,#4c2fd6 50%,#1b1446);color:#fff;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse at 70% 30%,#000,transparent 70%)}
+.hero>*{position:relative;z-index:1}.hero .kicker{font:600 12px Inter;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.hero h1{font-size:44px;line-height:1.05;margin:10px 0 14px}.hero h1 em{font-style:normal;background:linear-gradient(90deg,#8ff1ff,#ffb3ec);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:720px;color:rgba(255,255,255,.82);font-size:16px;margin:0 0 20px}
+.hero .row{display:flex;gap:10px;flex-wrap:wrap}.hero .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);color:#fff}
+.hero .btn.p{background:#fff;color:#2a1a7a}
+section{margin-top:56px}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}.sec-h b{font:700 13px var(--display);color:var(--accent);background:var(--soft);padding:3px 10px;border-radius:8px}
+.sec-h h2{font-size:28px}.lead{color:var(--muted);max-width:780px;margin:0 0 22px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+.card h3{font-size:17px;margin-bottom:6px;display:flex;align-items:center;gap:10px}.card p{margin:0;color:var(--muted);font-size:14px}
+.card ul{margin:8px 0 0;padding-left:18px;font-size:14px}.card li{margin:3px 0}
+.ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;background:var(--soft);flex:none}
+.pill{display:inline-block;font:600 11px Inter;padding:2px 9px;border-radius:20px;background:var(--surface-3);color:var(--muted);white-space:nowrap}
+.pill.new{background:rgba(22,180,126,.15);color:var(--ok)}.pill.up{background:rgba(29,140,240,.15);color:var(--info)}
+.pill.p0{background:rgba(239,68,89,.15);color:var(--danger)}.pill.p1{background:rgba(240,140,28,.15);color:var(--warn)}.pill.p2{background:var(--surface-3);color:var(--muted)}
+.problem{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.problem .card.bad{border-color:rgba(239,68,89,.25)}.problem .card.good{border-color:rgba(22,180,126,.3)}
+.metric{text-align:center}.metric b{display:block;font:700 26px var(--display);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}.metric span{font-size:13px;color:var(--muted)}
+.sect{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.sect .num{width:44px;height:44px;border-radius:12px;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 16px var(--display)}
+.sect h3{font-size:18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sect p{margin:4px 0 8px;color:var(--muted);font-size:14px}
+.sect .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;font-size:14px}.sect .cols h4{font:600 11px Inter;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin:6px 0 4px}
+.sect ul{margin:0;padding-left:18px}.sect li{margin:2px 0}
+.diagram{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;overflow-x:auto}
+.diagram .mermaid{display:flex;justify-content:center;min-width:640px}
+table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;font:600 11.5px Inter;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);padding:10px;border-bottom:1px solid var(--border-2)}
+td{padding:10px;border-bottom:1px solid var(--border);vertical-align:top}tr:last-child td{border-bottom:0}td small{color:var(--muted)}
+.tbl{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 8px;overflow-x:auto}
+/* wireframes */
+.wf{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.wf-cap{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:600;font-size:14px}
+.wf-body{padding:14px;display:grid;gap:10px;font-size:12px}
+.sk{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px}.sk b{display:block;font-size:12.5px;margin-bottom:4px}
+.sk .ln{height:7px;border-radius:4px;background:var(--surface-3);margin:5px 0}.sk .ln.a{background:var(--accent);opacity:.7}.sk .ln.o{background:var(--ok);opacity:.7}.sk .ln.w{background:var(--warn);opacity:.7}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.thumb{aspect-ratio:9/12;border-radius:9px;background:linear-gradient(160deg,#4c2fd6,#00c2ff);position:relative}.thumb.b{background:linear-gradient(160deg,#e11d73,#ff7a59)}.thumb.c{background:linear-gradient(160deg,#0e9f6e,#34d399)}.thumb.d{background:linear-gradient(160deg,#d97706,#fbbf24)}
+.thumb i{position:absolute;left:6px;bottom:6px;font:700 10px Inter;color:#fff;background:rgba(0,0,0,.35);padding:1px 6px;border-radius:6px;font-style:normal}
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;counter-reset:f}
+.flow .st{flex:1;min-width:150px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;margin:0 14px 14px 0}
+.flow .st::before{counter-increment:f;content:counter(f);position:absolute;top:-10px;left:12px;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;font:700 12px/22px Inter;text-align:center}
+.flow .st b{display:block;margin:6px 0 4px;font-size:14px}.flow .st span{font-size:13px;color:var(--muted)}
+.callout{border-left:3px solid var(--accent);background:var(--soft);padding:14px 18px;border-radius:0 12px 12px 0;font-size:14.5px}
+.callout.warn{border-color:var(--warn);background:rgba(240,140,28,.1)}
+.qs{counter-reset:q;display:grid;gap:10px}.qs div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px 14px 52px;position:relative;font-size:14.5px}
+.qs div::before{counter-increment:q;content:counter(q);position:absolute;left:14px;top:13px;width:26px;height:26px;border-radius:8px;background:var(--soft);color:var(--accent);font:700 13px/26px var(--display);text-align:center}
+.qs small{display:block;color:var(--muted);margin-top:3px}
+.bar{height:8px;border-radius:5px;background:var(--surface-3);overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--grad)}
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media (max-width:1000px){.wrap{grid-template-columns:1fr}nav.toc{display:none}.g3,.g4{grid-template-columns:1fr 1fr}.sect .cols{grid-template-columns:1fr}}
+@media (max-width:640px){.thumb{aspect-ratio:4/3}.wrap{padding:0 16px}.g2,.g3,.g4,.problem{grid-template-columns:1fr}.hero{padding:24px}.hero h1{font-size:30px}.sec-h h2{font-size:22px}.sect{grid-template-columns:1fr}.flow .st{margin-right:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="Содержание">
+  <div class="brand"><i>CD</i>Creative Desk 2.0</div>
+  <a href="#summary">Суть и цели</a><a href="#roles">Роли и сценарии</a><a href="#map">Карта сервиса</a><a href="#sections">Разделы и функции</a>
+  <a href="#flow">Жизненный цикл креатива</a><a href="#ux">Дизайн и UX</a><a href="#extra">Доп. функции</a><a href="#arch">Архитектура и данные</a>
+  <a href="#plan">План на 48 часов</a><a href="#questions">Вопросы к обсуждению</a>
+  <div class="links"><a class="btn p" href="/">Открыть демо →</a><a class="btn" href="https://github.com/NickPlexus/creative-desk" target="_blank" rel="noopener">GitHub</a></div>
+</nav>
+<main>
+
+<header class="hero">
+  <div class="kicker">Этап 2 · Проектирование</div>
+  <h1>Creative Desk 2.0 —<br><em>от трекера задач к системе, которая делает креативы прибыльнее</em></h1>
+  <p>Текущая версия закрывает базовый цикл «ТЗ → работа → проверка → готово». В концепции ниже — как превратить её в рабочий инструмент отдела: с обратной связью от результатов запуска, библиотекой креативов, контролем AI-бюджета и понятной картиной загрузки.</p>
+  <div class="row"><a class="btn p" href="/">Текущее демо</a><a class="btn" href="#plan">План работ на 48 ч</a><a class="btn" href="#questions">Вопросы к обсуждению</a></div>
+</header>
+
+<!-- 1 -->
+<section id="summary">
+  <div class="sec-h"><b>01</b><h2>Суть и цели</h2></div>
+  <p class="lead">В медиабаинге креатив — главный рычаг ROI. Отдел теряет деньги не на производстве, а на разрывах между людьми: ТЗ в чатах, правки по кругу, и никто не знает, какие креативы реально «зашли».</p>
+  <div class="problem">
+    <div class="card bad"><h3><span class="ic">😩</span>Как сейчас (без сервиса)</h3><ul>
+      <li>ТЗ разбросаны по Telegram, теряются референсы и детали</li><li>Непонятно, кто чем занят и кто перегружен</li>
+      <li>Правки идут по кругу без истории — «а что было в прошлой версии?»</li><li>Готовые креативы лежат по личным папкам, удачные подходы не переиспользуются</li>
+      <li>AI-подписки и кредиты растут, а окупаемость неизвестна</li><li>Байер не возвращает обратную связь — креативщик не знает, что сработало</li></ul></div>
+    <div class="card good"><h3><span class="ic">✨</span>Что даёт Creative Desk 2.0</h3><ul>
+      <li>Структурированное ТЗ из шаблона за 1 минуту</li><li>«Мой день» для каждой роли — сразу видно, что делать сейчас</li>
+      <li>Версии результатов и правки, привязанные к конкретной версии</li><li>Библиотека креативов с поиском по офферу, GEO, подходу</li>
+      <li>Бюджеты AI-кредитов с лимитами и стоимостью в деньгах</li><li>Статусы результативности: какие креативы и исполнители дают «победителей»</li></ul></div>
+  </div>
+  <div class="grid g4" style="margin-top:14px">
+    <div class="card metric"><b>−30%</b><span>времени цикла ТЗ → запуск</span></div>
+    <div class="card metric"><b>−40%</b><span>кругов правок за счёт качества ТЗ</span></div>
+    <div class="card metric"><b>100%</b><span>креативов в единой библиотеке</span></div>
+    <div class="card metric"><b>₽ / креатив</b><span>видна стоимость, включая AI</span></div>
+  </div>
+  <p style="color:var(--faint);font-size:12.5px;margin-top:8px">Целевые ориентиры для обсуждения, а не обещания — точные значения зависят от текущих процессов команды.</p>
+</section>
+
+<!-- 2 -->
+<section id="roles">
+  <div class="sec-h"><b>02</b><h2>Роли и ключевые сценарии</h2></div>
+  <p class="lead">Четыре роли. Каждая видит свой стартовый экран и только нужные ей действия — интерфейс не перегружается.</p>
+  <div class="grid g4">
+    <div class="card"><h3><span class="ic">🎯</span>Медиабайер</h3><p>Ставит ТЗ, принимает работу, отдаёт обратную связь по результатам запуска.</p><ul><li>Создать ТЗ из шаблона</li><li>Принять / вернуть на правки по версии</li><li>Отметить креатив «победитель / выгорел»</li><li>Найти удачный креатив в библиотеке и заказать вариации</li></ul></div>
+    <div class="card"><h3><span class="ic">🎨</span>Креативщик</h3><p>Берёт задачи из очереди, сдаёт версии, фиксирует время и AI-расходы.</p><ul><li>Видеть свою очередь и дедлайны</li><li>Запускать таймер работы</li><li>Загружать версии с превью</li><li>Видеть, какие его креативы «зашли»</li></ul></div>
+    <div class="card"><h3><span class="ic">📊</span>Руководитель</h3><p>Управляет загрузкой, сроками, качеством и бюджетом.</p><ul><li>Алерты: просрочки, перегруз, бюджет</li><li>Назначать и перераспределять задачи</li><li>Аналитика по людям, офферам, AI</li><li>Отчёты и экспорт</li></ul></div>
+    <div class="card"><h3><span class="ic">⚙️</span>Администратор <span class="pill new">новое</span></h3><p>Настраивает пространство, обычно совпадает с руководителем.</p><ul><li>Пользователи и роли</li><li>Справочники: офферы, GEO, типы, AI-сервисы</li><li>Шаблоны ТЗ и SLA</li><li>Интеграции (Telegram)</li></ul></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="map">
+  <div class="sec-h"><b>03</b><h2>Карта сервиса</h2></div>
+  <p class="lead">Разделы и связи между ними. <span class="pill new">новое</span> — новые разделы, <span class="pill up">доработка</span> — развитие существующих.</p>
+  <div class="diagram"><pre class="mermaid">
+flowchart LR
+  LOGIN([Вход]) --> HOME
+  HOME["🏠 Мой день<br/><small>стартовый экран роли</small>"]
+  HOME --> TASKS["📋 Задачи<br/>Kanban · Список · Календарь"]
+  HOME --> NOTIF["🔔 Уведомления"]
+  TASKS --> CARD["🗂 Карточка задачи<br/>ТЗ · версии · правки · время · AI"]
+  NEW["➕ Новое ТЗ<br/>из шаблона"] --> TASKS
+  CARD -- принято --> LIB["🖼 Библиотека креативов"]
+  LIB -- результаты запуска --> PERF["📈 Результативность"]
+  LIB -- «сделать вариации» --> NEW
+  PERF --> AN["📊 Аналитика"]
+  CARD -- кредиты --> AI["✦ AI-расходы и бюджеты"]
+  AI --> AN
+  TEAM["👥 Команда<br/>загрузка · доступность"] --> AN
+  TEAM -. автоназначение .-> TASKS
+  ADM["⚙️ Администрирование<br/>справочники · шаблоны · SLA · роли"] -. настраивает .-> NEW
+  ADM -.-> AI
+  classDef n fill:#173126,stroke:#16b47e,color:#e8fff4
+  classDef u fill:#162a3a,stroke:#1d8cf0,color:#e6f4ff
+  class HOME,LIB,PERF,ADM n
+  class TASKS,CARD,NEW,AI,AN,TEAM,NOTIF u
+</pre></div>
+</section>
+
+<!-- 4 -->
+<section id="sections">
+  <div class="sec-h"><b>04</b><h2>Разделы и функциональность</h2></div>
+  <p class="lead">Что делает каждый раздел и как он связан с остальными.</p>
+  <div class="grid">
+    <div class="sect"><div class="num">1</div><div><h3>Мой день <span class="pill new">новое</span></h3><p>Стартовый экран вместо «голой» доски: каждой роли — свой фокус на сегодня.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li><b>Креативщик:</b> моя очередь по приоритету, дедлайны сегодня/завтра, вернувшиеся правки, активный таймер</li>
+        <li><b>Байер:</b> ждут моей проверки, мои ТЗ по статусам, креативы без отметки результата</li><li><b>Руководитель:</b> алерты (просрочки, перегруз &gt; N задач, 80% AI-бюджета), сводка дня</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Каждый блок ведёт в отфильтрованные Задачи или Карточку</li><li>Алерты → Команда / AI-расходы</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">2</div><div><h3>Задачи <span class="pill up">доработка</span></h3><p>Kanban остаётся основой, добавляются виды и инструменты планирования.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Виды: Kanban · Список · <b>Календарь дедлайнов</b></li><li><b>Сохранённые фильтры</b> («Срочное по Nutra», «Мои правки»)</li>
+        <li>Группировка по офферу / исполнителю, WIP-лимиты колонок</li><li>Массовые действия: назначить, изменить приоритет, перенести дедлайн</li><li>Экспорт выборки в CSV/Excel</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Карточка задачи открывается в боковой панели без ухода со страницы</li><li>Фильтры приходят из «Мой день» и Аналитики</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">3</div><div><h3>Новое ТЗ <span class="pill up">доработка</span></h3><p>Качество ТЗ напрямую определяет число правок — поэтому форма помогает его заполнить.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li><b>Шаблоны ТЗ</b> по типу креатива (видео, статика, UGC…) с подсказками и чек-листом</li>
+        <li>Оффер и GEO — из справочников (автокомплит, без опечаток), мульти-GEO</li><li><b>Пакет креативов:</b> «5 видео + 10 статик» → подзадачи с общим ТЗ</li>
+        <li>Референсы: ссылки, файлы, <b>креативы из библиотеки</b></li><li>Дедлайн подставляется по SLA приоритета, черновики, клонирование</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Шаблоны и SLA — из Администрирования</li><li>«Сделать вариации» в Библиотеке открывает ТЗ с заполненным референсом</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">4</div><div><h3>Карточка задачи <span class="pill up">доработка</span></h3><p>Единое место работы над задачей, в котором видна вся история.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li><b>Версии результата</b> v1, v2… с превью изображений и видео, сравнение версий рядом</li>
+        <li><b>Правки привязаны к версии</b>, чек-лист правок: креативщик отмечает выполненные</li><li><b>Комментарии с @упоминаниями</b> → уведомление адресату</li>
+        <li><b>Таймер работы</b> (старт/пауза) — чистое время работы отдельно от времени цикла</li><li>AI-расходы с пересчётом в деньги, полная история действий</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Принятая версия автоматически попадает в Библиотеку</li><li>Время и кредиты → Аналитика и AI-расходы</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">5</div><div><h3>Библиотека креативов <span class="pill new">новое</span></h3><p>Все принятые креативы отдела в одном месте — с поиском и повторным использованием.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Галерея с превью, фильтры: оффер, GEO, тип, исполнитель, подход/хук, период</li>
+        <li>Теги подходов («до/после», «отзыв», «AI-аватар»…)</li><li>Статус результата: <b>в тесте · победитель · средний · выгорел</b></li>
+        <li>Кнопки «Скачать», «Сделать вариации», «Адаптировать под GEO»</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Наполняется из Карточек автоматически</li><li>Статусы → Результативность и Аналитика</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">6</div><div><h3>Результативность <span class="pill new">новое</span></h3><p>Обратная связь от запуска — то, чего не хватает большинству креативных отделов.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Байер отмечает статус креатива и (по желанию) ключевые метрики: CTR, CR, ROI</li>
+        <li>Импорт метрик из CSV (выгрузка рекламного кабинета) по ID креатива</li><li><b>Win rate</b> по исполнителям, подходам, типам, офферам</li>
+        <li>Напоминание байеру: «креатив запущен 3 дня назад — отметьте результат»</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Данные из Библиотеки</li><li>Выводы → Аналитика, «Мой день» креативщика</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">7</div><div><h3>AI-расходы и бюджеты <span class="pill up">доработка</span></h3><p>Из учёта превращается в контроль.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Справочник AI-сервисов: <b>стоимость кредита</b>, подписки и их цена в месяц</li>
+        <li><b>Месячные лимиты</b> по сервису и исполнителю, алерт на 80% и 100%</li><li>Стоимость креатива = время × ставка + AI-расходы</li><li>Доля расходов на правки, сравнение сервисов</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Данные — из Карточек задач</li><li>Алерты → «Мой день» руководителя</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">8</div><div><h3>Аналитика <span class="pill up">доработка</span></h3><p>Добавляются качество, деньги и тренды.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Текущее: загрузка, сроки, просрочки, AI по сервисам и людям, динамика по дням</li>
+        <li><b>Качество:</b> доля принятых с первого раза, правок на задачу, win rate</li><li><b>Деньги:</b> стоимость креатива, AI-бюджет vs факт</li>
+        <li>Срезы по офферам и GEO, сравнение периодов, экспорт отчёта</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Любой график кликабелен → отфильтрованный список задач</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">9</div><div><h3>Команда <span class="pill up">доработка</span></h3><p>Загрузка и доступность людей.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Профили: специализации, навыки, AI-инструменты</li><li><b>Доступность:</b> отпуск, больничный, часы в неделю → ёмкость</li>
+        <li>Тепловая карта загрузки на 2 недели вперёд (по дедлайнам)</li><li><b>Автоназначение</b> по специализации и загрузке</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Автоназначение → Задачи</li><li>Ёмкость → алерты перегруза</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">10</div><div><h3>Уведомления <span class="pill up">доработка</span></h3><p>Без уведомлений сервис не заменит чат — поэтому они приходят туда, где команда уже есть.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Центр уведомлений в сервисе (уже есть)</li><li><b>Telegram-бот:</b> личные уведомления + кнопки «Принять / На правки» прямо в чате</li>
+        <li>Дайджест для руководителя утром</li><li>Гибкая настройка типов событий</li></ul></div>
+        <div><h4>Связи</h4><ul><li>События — из истории действий (уже ведётся)</li></ul></div></div></div></div>
+
+    <div class="sect"><div class="num">11</div><div><h3>Администрирование <span class="pill new">новое</span></h3><p>Всё, что сейчас «зашито» в код, становится настраиваемым.</p>
+      <div class="cols"><div><h4>Функции</h4><ul><li>Пользователи: приглашение, роли, блокировка, сброс пароля</li><li>Справочники: офферы, GEO, типы креативов, теги подходов, AI-сервисы</li>
+        <li>Шаблоны ТЗ, SLA по приоритетам, рабочие часы</li><li>Журнал аудита действий</li></ul></div>
+        <div><h4>Связи</h4><ul><li>Питает формы ТЗ, AI-расходы, уведомления</li></ul></div></div></div></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="flow">
+  <div class="sec-h"><b>05</b><h2>Жизненный цикл креатива</h2></div>
+  <p class="lead">Главное изменение — цикл замыкается: результаты запуска возвращаются в работу отдела и влияют на следующие ТЗ.</p>
+  <div class="flow">
+    <div class="st"><b>ТЗ из шаблона</b><span>Байер выбирает шаблон, оффер и GEO из справочника, прикрепляет референсы из библиотеки</span></div>
+    <div class="st"><b>Назначение</b><span>Креативщик берёт сам или срабатывает автоназначение по специализации и загрузке</span></div>
+    <div class="st"><b>Работа</b><span>Таймер, AI-кредиты, вопросы через @упоминания</span></div>
+    <div class="st"><b>Версия на проверку</b><span>v1 с превью и чек-листом ТЗ</span></div>
+    <div class="st"><b>Правки по версии</b><span>Пункты правок → v2 → сравнение версий</span></div>
+    <div class="st"><b>Принято → Библиотека</b><span>Финальная версия попадает в библиотеку с тегами</span></div>
+    <div class="st"><b>Результат запуска</b><span>Байер отмечает «победитель / выгорел», метрики</span></div>
+    <div class="st"><b>Вариации</b><span>Из победителя — новое ТЗ в один клик</span></div>
+  </div>
+  <div class="diagram" style="margin-top:6px"><pre class="mermaid">
+stateDiagram-v2
+  direction LR
+  [*] --> Новые: ТЗ создано
+  Новые --> ВРаботе: взял / назначен
+  ВРаботе --> Новые: вернул в очередь
+  ВРаботе --> НаПроверке: сдал версию vN
+  НаПроверке --> Правки: правки по vN
+  Правки --> НаПроверке: сдал vN+1
+  НаПроверке --> Готово: принято
+  Готово --> Правки: переоткрыто
+  Готово --> ВБиблиотеке: автоматически
+  ВБиблиотеке --> Результат: отметка байера
+  Результат --> [*]
+  Результат --> Новые: «сделать вариации»
+</pre></div>
+</section>
+
+<!-- 6 -->
+<section id="ux">
+  <div class="sec-h"><b>06</b><h2>Дизайн и UX</h2></div>
+  <p class="lead">Визуальный стиль уже задан текущей версией — тёмная и светлая тема, градиентный акцент, карточки. В 2.0 — принципы, которые держат интерфейс простым при росте функций.</p>
+  <div class="grid g3">
+    <div class="card"><h3><span class="ic">🎯</span>Фокус на действии</h3><p>Главная кнопка на экране всегда одна и зависит от роли и статуса: «Взять», «Сдать v2», «Принять».</p></div>
+    <div class="card"><h3><span class="ic">⚡</span>2 клика до любого действия</h3><p>Боковая панель вместо переходов, <b>Ctrl K</b> для поиска и команд, горячие клавиши на доске.</p></div>
+    <div class="card"><h3><span class="ic">🧭</span>Ничего не теряется</h3><p>Любое число на дашборде кликабельно и ведёт в список задач, из которых оно посчитано.</p></div>
+    <div class="card"><h3><span class="ic">🛡</span>Ошибки невозможны</h3><p>Недоступные действия скрыты, а при попытке перенести карточку не туда — объяснение причины.</p></div>
+    <div class="card"><h3><span class="ic">📱</span>Работает с телефона</h3><p>Байер принимает работу с телефона: адаптивная вёрстка + действия в Telegram-боте.</p></div>
+    <div class="card"><h3><span class="ic">🖼</span>Визуал на первом месте</h3><p>Креатив — это картинка: превью в карточках, галерея в библиотеке, сравнение версий рядом.</p></div>
+  </div>
+  <h3 style="margin:26px 0 12px;font-size:18px">Схемы ключевых экранов</h3>
+  <div class="grid g3">
+    <div class="wf"><div class="wf-cap">Мой день · креативщик <span class="pill new">новое</span></div><div class="wf-body">
+      <div class="sk" style="border-color:var(--accent)"><b>⏱ Таймер: #42 Видео 15с — 01:24:10</b><div class="row"><div class="ln a"></div><div class="ln"></div></div></div>
+      <div class="row"><div class="sk"><b>Сегодня</b>3 задачи<div class="ln w"></div></div><div class="sk"><b>Правки</b>1 вернулась<div class="ln w"></div></div><div class="sk"><b>Победители</b>2 за неделю<div class="ln o"></div></div></div>
+      <div class="sk"><b>Моя очередь</b><div class="ln a" style="width:90%"></div><div class="ln" style="width:75%"></div><div class="ln" style="width:60%"></div></div>
+      <div class="sk"><b>Свободные задачи по моей специализации</b><div class="ln" style="width:80%"></div><div class="ln" style="width:55%"></div></div></div></div>
+    <div class="wf"><div class="wf-cap">Карточка · версии и правки <span class="pill up">доработка</span></div><div class="wf-body">
+      <div class="row"><div><div class="thumb"><i>v1</i></div></div><div><div class="thumb b"><i>v2 · на проверке</i></div></div></div>
+      <div class="sk"><b>Правки к v1 · 2 из 3 выполнено</b>☑ Хук динамичнее<br>☑ CTA «Забрать бонус»<br>☐ Шрифт крупнее</div>
+      <div class="row"><div class="sk" style="text-align:center;background:var(--ok);color:#fff;border:0"><b style="margin:0">Принять v2</b></div><div class="sk" style="text-align:center"><b style="margin:0">На правки</b></div></div>
+      <div class="sk"><b>@Ира проверь текст на DE</b><div class="ln" style="width:70%"></div></div></div></div>
+    <div class="wf"><div class="wf-cap">Библиотека креативов <span class="pill new">новое</span></div><div class="wf-body">
+      <div class="row"><div class="sk" style="padding:6px 10px">🔍 Nutra · DE · видео</div><div class="sk" style="padding:6px 10px;flex:.5">🏆 Победители</div></div>
+      <div class="row"><div class="thumb"><i>🏆 WIN</i></div><div class="thumb c"><i>тест</i></div><div class="thumb d"><i>🏆 WIN</i></div></div>
+      <div class="row"><div class="thumb b"><i>выгорел</i></div><div class="thumb"><i>средний</i></div><div class="thumb c"><i>тест</i></div></div>
+      <div class="sk" style="text-align:center"><b style="margin:0">✨ Сделать вариации</b></div></div></div>
+  </div>
+  <p style="margin-top:14px;font-size:14px;color:var(--muted)">Уже реализованные экраны (доска, карточка, аналитика, команда, настройки) можно посмотреть вживую в <a href="/">демо</a> — новые экраны будут сделаны в той же дизайн-системе.</p>
+</section>
+
+<!-- 7 -->
+<section id="extra">
+  <div class="sec-h"><b>07</b><h2>Дополнительные функции</h2></div>
+  <p class="lead">Предложения сверх базовых требований — с оценкой пользы и трудоёмкости, чтобы вместе выбрать, что войдёт в разработку.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Функция</th><th>Зачем</th><th>Польза</th><th>Трудоёмкость</th><th>Приоритет</th></tr></thead>
+    <tbody>
+      <tr><td><b>Постоянное хранилище</b> (PostgreSQL + облачное хранилище файлов)</td><td><small>Сейчас демо на бесплатном хостинге сбрасывает данные при перезапуске</small></td><td>критично</td><td>3 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Справочники</b> офферов, GEO, типов, AI-сервисов</td><td><small>Единые названия → корректная аналитика</small></td><td>высокая</td><td>3 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Шаблоны ТЗ</b> + SLA-дедлайны</td><td><small>Меньше правок из-за неполного ТЗ</small></td><td>высокая</td><td>3 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Версии результата</b> с превью и правками по версии</td><td><small>Прозрачный цикл правок</small></td><td>высокая</td><td>5 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Библиотека креативов</b> + статусы результативности</td><td><small>Переиспользование, обратная связь, win rate</small></td><td>очень высокая</td><td>6 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Мой день</b> для каждой роли</td><td><small>Понятно, что делать прямо сейчас</small></td><td>высокая</td><td>4 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>AI-бюджеты</b>: цена кредита, лимиты, алерты</td><td><small>Контроль расходов в деньгах</small></td><td>высокая</td><td>3 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Комментарии с @упоминаниями</b></td><td><small>Вопросы по задаче не уходят в чат</small></td><td>средняя</td><td>2 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Управление пользователями</b> (админ)</td><td><small>Сервис можно реально внедрить</small></td><td>высокая</td><td>3 ч</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td><b>Таймер работы</b></td><td><small>Чистое время и себестоимость креатива</small></td><td>средняя</td><td>2 ч</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td><b>Telegram-бот</b> с действиями</td><td><small>Команда живёт в Telegram</small></td><td>высокая</td><td>5 ч</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td><b>Пакеты креативов</b> (подзадачи)</td><td><small>Один заказ «5 видео + 10 статик»</small></td><td>средняя</td><td>3 ч</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td><b>Календарь</b> дедлайнов + экспорт в Excel</td><td><small>Планирование и отчётность</small></td><td>средняя</td><td>3 ч</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td><b>Доступность сотрудников</b> + автоназначение</td><td><small>Честная картина ёмкости отдела</small></td><td>средняя</td><td>3 ч</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td>Импорт метрик из CSV рекламных кабинетов</td><td><small>Результативность без ручного ввода</small></td><td>высокая</td><td>4 ч</td><td><span class="pill p2">P2</span></td></tr>
+      <tr><td>Комментарии-пины прямо на изображении</td><td><small>Точные правки «вот здесь»</small></td><td>средняя</td><td>5 ч</td><td><span class="pill p2">P2</span></td></tr>
+      <tr><td>AI-ассистент ТЗ (генерация брифа, хуков, текстов)</td><td><small>Быстрее и качественнее ТЗ</small></td><td>средняя</td><td>4 ч</td><td><span class="pill p2">P2</span></td></tr>
+      <tr><td>Интеграция с Google Drive / Figma</td><td><small>Файлы там, где команда уже работает</small></td><td>средняя</td><td>6 ч</td><td><span class="pill p2">P2</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 8 -->
+<section id="arch">
+  <div class="sec-h"><b>08</b><h2>Архитектура и данные</h2></div>
+  <p class="lead">Сохраняем простой и прозрачный стек текущей версии, усиливаем то, что нужно для реальной работы: надёжное хранение, файлы, фоновые задачи.</p>
+  <div class="grid g3">
+    <div class="card"><h3><span class="ic">🖥</span>Frontend</h3><ul><li>SPA на текущей дизайн-системе</li><li>Модульная структура по разделам</li><li>Без тяжёлой сборки — быстрые правки</li></ul></div>
+    <div class="card"><h3><span class="ic">⚙️</span>Backend</h3><ul><li>Node.js + Express, REST API</li><li>Машина состояний задач (уже есть) + права по ролям</li><li>Планировщик: напоминания, дайджест, алерты бюджета</li></ul></div>
+    <div class="card"><h3><span class="ic">🗄</span>Данные и файлы</h3><ul><li><b>PostgreSQL</b> (Neon / Supabase, бесплатный тариф) — данные не теряются</li><li>Файлы — S3-совместимое хранилище (Cloudflare R2)</li><li>Миграции схемы, ежедневный бэкап</li></ul></div>
+  </div>
+  <div class="diagram" style="margin-top:14px"><pre class="mermaid">
+erDiagram
+  USERS ||--o{ TASKS : "ставит / выполняет"
+  USERS ||--o{ AVAILABILITY : "доступность"
+  OFFERS ||--o{ TASKS : ""
+  GEOS ||--o{ TASKS : ""
+  TEMPLATES ||--o{ TASKS : "создана из"
+  TASKS ||--o{ TASKS : "пакет → подзадачи"
+  TASKS ||--o{ VERSIONS : "v1, v2…"
+  VERSIONS ||--o{ REVISION_ITEMS : "правки к версии"
+  TASKS ||--o{ COMMENTS : "@упоминания"
+  TASKS ||--o{ TIME_ENTRIES : "таймер"
+  TASKS ||--o{ AI_COSTS : ""
+  AI_SERVICES ||--o{ AI_COSTS : "цена кредита"
+  AI_SERVICES ||--o{ AI_BUDGETS : "лимиты"
+  VERSIONS ||--o| LIBRARY_ITEMS : "принятая версия"
+  LIBRARY_ITEMS ||--o{ PERFORMANCE : "результаты запуска"
+  TASKS ||--o{ HISTORY : "журнал"
+  USERS ||--o{ NOTIFICATIONS : ""
+</pre></div>
+  <div class="callout warn" style="margin-top:14px"><b>Важно для «полноценного хранения данных»:</b> текущее демо развёрнуто на бесплатном Render, где диск временный — база пересоздаётся при перезапуске. В 2.0 данные и файлы переезжают во внешние PostgreSQL и S3-хранилище, это первый пункт плана.</div>
+</section>
+
+<!-- 9 -->
+<section id="plan">
+  <div class="sec-h"><b>09</b><h2>План разработки на 48 часов</h2></div>
+  <p class="lead">Предлагаю в 48 часов реализовать всё из P0 — это полноценный рабочий продукт. P1 — если останется время или после согласования продления. P2 — дорожная карта.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Блок 1 · Фундамент <span class="pill">0–12 ч</span></h3><ul><li>PostgreSQL + хранилище файлов, миграции</li><li>Справочники и администрирование пользователей</li><li>Шаблоны ТЗ, SLA-дедлайны</li></ul><div class="bar"><i style="width:25%"></i></div></div>
+    <div class="card"><h3>Блок 2 · Работа с задачей <span class="pill">12–28 ч</span></h3><ul><li>Версии результата с превью</li><li>Правки по версии с чек-листом</li><li>Комментарии с @упоминаниями</li><li>AI-сервисы с ценой и бюджетами</li></ul><div class="bar"><i style="width:58%"></i></div></div>
+    <div class="card"><h3>Блок 3 · Ценность <span class="pill">28–42 ч</span></h3><ul><li>Библиотека креативов</li><li>Результативность и win rate</li><li>«Мой день» для ролей</li><li>Аналитика: качество и деньги</li></ul><div class="bar"><i style="width:88%"></i></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Финиш · 42–48 ч</h3><p>Тесты сценариев под каждой ролью, ревью кода, демо-данные, деплой, документация и короткое видео-демо ключевых сценариев.</p></div>
+  <div class="callout" style="margin-top:14px">Если после обсуждения в объём войдут функции P1 (Telegram-бот, таймер, календарь), заранее предупрежу и предложу реалистичный срок — как и предусмотрено условиями.</div>
+</section>
+
+<!-- 10 -->
+<section id="questions">
+  <div class="sec-h"><b>10</b><h2>Вопросы для согласования</h2></div>
+  <p class="lead">Ответы на них помогут точнее попасть в процессы команды.</p>
+  <div class="qs">
+    <div>Сколько человек в отделе и сколько задач в неделю?<small>Влияет на акценты: планирование ёмкости или скорость обработки потока.</small></div>
+    <div>Где команда общается — Telegram, Slack?<small>Определяет канал уведомлений и бота.</small></div>
+    <div>Как сейчас байеры оценивают результат креатива?<small>Достаточно ли статусов «победитель / выгорел» или нужны метрики и импорт из кабинетов.</small></div>
+    <div>Где хранятся файлы креативов?<small>Свой файловый архив или ссылки на Google Drive.</small></div>
+    <div>Нужен ли учёт стоимости работы креативщика (ставка в час)?<small>Для расчёта полной себестоимости креатива.</small></div>
+    <div>Какие AI-сервисы используются и как оплачиваются — кредиты или подписки?<small>Для корректной модели бюджетов.</small></div>
+    <div>Какие функции из P1/P2 важнее всего для вас?<small>Можем поменять приоритеты под реальные боли команды.</small></div>
+  </div>
+</section>
+
+<footer>Creative Desk 2.0 · концепция для обсуждения · <a href="/">демо текущей версии</a> · <a href="https://github.com/NickPlexus/creative-desk" target="_blank" rel="noopener">исходный код</a></footer>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+const dark = document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+try { mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'default', securityLevel: 'strict', fontFamily: 'Inter, system-ui, sans-serif',
+  themeVariables: dark ? { primaryColor: '#23283d', primaryTextColor: '#eef0fb', primaryBorderColor: '#8f78ff', lineColor: '#8f78ff', background: '#141726', mainBkg: '#23283d' } : {} }); } catch (e) {}
+// highlight current section in TOC
+const links = [...document.querySelectorAll('.toc a[href^="#"]')];
+const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-30% 0px -60% 0px' });
+document.querySelectorAll('main section[id]').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
